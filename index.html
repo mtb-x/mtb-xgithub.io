@@ -20,6 +20,63 @@ body {
     flex: 1;
 }
 
+.top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    display: flex;
+    justify-content: center;   /* 👈 center links */
+    align-items: center;
+
+    padding: 5px 24px;
+    /* background: linear-gradient(135deg, #2c3e50, #34495e); */
+    background: linear-gradient(
+        90deg,
+        #2c3e50 0%,
+        #34495e 50%,
+        #2c3e50 100%
+    );
+    /* box-shadow: 0 4px 10px rgba(0,0,0,0.4); */
+}
+
+/* Links container */
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+/* Links */
+.nav-links a {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.25s ease, transform 0.15s ease;
+}
+
+/* Hover effect */
+.nav-links .nav-button:hover {
+    background: rgba(26, 188, 156, 0.25);
+    transform: translateY(-1px);
+}
+
+/* Active link (optional) */
+.nav-links .active-page {
+    background: #1abc9c;
+    color: #2c3e50;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+
 /* Footer styling */
 .footer {
     /* background: #1abc9c; */
@@ -151,6 +208,7 @@ button:hover { background: #16a085; }
   background: rgba(0,0,0,0.7);
   opacity: 0;
   pointer-events: none;
+  z-index: 1000;
   transition: opacity 0.3s ease;
 }
 
@@ -187,15 +245,91 @@ button:hover { background: #16a085; }
     gap: 4px 6px; /* vertical and horizontal gap */
 }
 
+.dead-link {
+    position: relative;
+    color: #7f8c8d;
+    cursor: not-allowed;
+    opacity: 0.6;
+    pointer-events: auto; /* allow hover */
+    text-decoration: none;
+}
+
+/* Prevent click */
+.dead-link:active {
+    pointer-events: none;
+}
+
+/* Tooltip bubble */
+.dead-link::after {
+    content: "Coming soon";
+    position: absolute;
+    bottom: -38px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.95);
+    
+    background: #1abc9c;
+    color: #2c3e50;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.75em;
+    white-space: nowrap;
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Speech bubble arrow */
+.dead-link::before {
+    content: "";
+    position: absolute;
+    bottom: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent #1abc9c transparent;
+
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+/* Show tooltip on hover */
+.dead-link:hover::after,
+.dead-link:hover::before {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+}
+
+.dead-link:hover {
+    animation: wiggle 0.3s ease-in-out;
+}
+
+@keyframes wiggle {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(-1deg); }
+    50% { transform: rotate(1deg); }
+    100% { transform: rotate(0deg); }
+}
+
+
 </style>
 <!-- Favicon -->
 <link rel="icon" type="image/png" href="images/favicon.png"/>
 <!--  -->
 </head>
+<h1>&spades; &hearts; Playing Card Generator &diams; &clubs;</h1>
 <body>
+    <nav class="top-nav">
+    <div class="nav-links">
+        <a class="active-page">Card Generator</a>
+        <a class="nav-button dead-link" href="stack.html">Stack trainer</a>
+        <a class="nav-button dead-link" href="acaan.html">ACAAN Calculator</a>
+    </div>
+</nav>
+
 <div class="content">
-    
-<h1>Playing Card Generator</h1>
 
 <!-- <div class="controls"> -->
     <!-- <div>
@@ -238,7 +372,7 @@ button:hover { background: #16a085; }
             <option value="newdeck">New deck order</option>
             <option value="ps">Particle Stack</option>
         </select></div>
-        <label><input type="checkbox" class="" value="stck-clk2revl-enabled" unchecked>Click to reveal</label>
+        <label class="dead-link"><input type="checkbox" class="dead-link" value="stck-clk2revl-enabled" unchecked>Click to reveal</label>
         <button id="stackToggleBtn">Show stack info</button>
         </div>
     </div>
