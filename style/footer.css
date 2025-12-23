@@ -1,0 +1,14 @@
+/* Footer styling */
+.footer {
+    /* background: #1abc9c; */
+    color: rgb(154, 154, 154);
+    text-align: center;
+    padding: 12px;
+    font-size: 12px;
+    /* font-weight: bold; */
+}
+
+.footer a {
+    text-decoration: none;
+    color: rgb(90, 106, 221);
+}

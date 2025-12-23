@@ -1,0 +1,103 @@
+/* --- CARD TRAY (FIXED TOP AREA) --- */
+.card-tray {
+    position: sticky;
+    top: 60px; /* below nav + title */
+    /* z-index: 500; */
+
+    background: #2c3e50;
+    padding: 10px 0 14px;
+    margin-bottom: 20px;
+
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+
+    align-items: center;
+    height: 215px; 
+}
+
+/* Horizontal scrolling card row */
+.cards {
+    display: flex;
+    flex-wrap: nowrap;          /* 👈 prevent wrapping */
+    gap: 16px;
+
+    overflow-x: auto;           /* 👈 horizontal scroll */
+    overflow-y: hidden;
+
+    padding: 20px 20px;
+    scroll-behavior: smooth;
+
+    justify-content: center;
+}
+
+.cards:empty {
+    justify-content: center;
+    align-items: center;
+}
+
+.cards:empty::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    content: "Generated cards will appear here";
+    color: rgba(236, 240, 241, 0.45);
+    font-size: 0.9em;
+    text-align: center;
+    pointer-events: none;
+}
+
+
+/* Prevent cards from shrinking */
+.card {
+    flex: 0 0 auto;
+}
+
+/* Optional: nicer scrollbar */
+.cards::-webkit-scrollbar {
+    height: 10px;
+}
+
+.cards::-webkit-scrollbar-track {
+    background: #34495e;
+    border-radius: 10px;
+}
+
+.cards::-webkit-scrollbar-thumb {
+    background: #1abc9c;
+    border-radius: 10px;
+}
+
+.cards::-webkit-scrollbar-thumb:hover {
+    background: #16a085;
+}
+
+.card-tray::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background: linear-gradient(
+        to bottom,
+        rgba(44,62,80,0),
+        rgba(44,62,80,1)
+    );
+    pointer-events: none;
+}
+
+/* .cards { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-bottom: 30px; } */
+
+.card {
+    width: 110px; height: 160px; background: #ecf0f1; border-radius: 10px; padding: 8px; margin-top:5px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.4); animation: deal 0.4s ease-out forwards; opacity:0; position: relative;
+}
+
+@keyframes deal { to { opacity:1; transform: translateY(0); } }
+
+.rank { font-weight: bold; }
+.rank.bottom { position: absolute; bottom: 8px; right: 8px; transform: rotate(180deg); }
+
+.pips { display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(5,1fr); height:100%; align-items:center; justify-items:center; }
+.face { font-size:3em; text-align:center; line-height:120px; }
+.joker { font-size:1.8em; text-align:center; line-height:140px; }
