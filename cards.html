@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Playing Card Generator</title>
+
+<link rel="stylesheet" href="style/site.css">
+<link rel="stylesheet" href="style/nav.css">
+<link rel="stylesheet" href="style/footer.css">
+<link rel="stylesheet" href="style/cards.css">
+<style>
+
+.stack-label {
+    display:block;
+    margin-bottom: 3px;
+    font-size: 10px;
+    text-align: center;
+}
+
+.panels {
+    display: flex;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: flex-start;
+}
+.panel {background:#34495e; padding:15px; border-radius:8px;}
+.history {
+    flex: 1;
+    height: 400px;
+    overflow-y: auto;
+    width:20px;
+}
+
+.stack-panel {
+    flex: 1; /* smaller panel */
+}
+.history .hist-log-stack-txt {
+    display: none; /* by default, have these hidden */
+    color: #787878;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* space between select and button */
+}
+
+.flex-col select,
+.flex-col button {
+    width: 100%; 
+}
+
+.flex-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.right-panes{
+    flex:0.5;
+}
+
+
+
+.flex-row label {
+    white-space: nowrap; /* prevents label wrapping */
+}
+
+
+
+.card-count { font-size:0.9em; margin-top:8px; color:#ecf0f1; }
+
+
+
+
+
+
+</style>
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="images/favicon.png"/>
+<!--  -->
+</head>
+<h1>&spades; &hearts; Playing Card Generator &diams; &clubs;</h1>
+<body>
+    <nav class="top-nav">
+    <div class="nav-links">
+        <a class="active-page">Card Generator</a>
+        <a class="nav-button dead-link" href="stack.html">Stack trainer</a>
+        <a class="nav-button dead-link" href="acaan.html">ACAAN Calculator</a>
+    </div>
+</nav>
+
+<div class="content">
+
+
+
+<div class="card-tray">
+    <div class="cards" id="cards"></div>
+</div>
+
+<div class="panels">
+    <div class="panel history">
+        <p><span class="panel-titles">History</span> <button style="margin-left: 15px;"id="clearhist">Clear</button></p>
+        <ul id="history"></ul>
+    </div>
+
+    <div class="right-panes flex-col">
+    <div class="panel">
+        <p class="panel-titles">Generate cards</p>
+        <div class="flex-col">
+        <div class="flex-row">
+        <div>
+            <label>Number of cards</label>
+            <input type="number" id="count" min="1" max="54" value="1">
+        </div>
+        <button id="settingsBtn" style="width: 45%;">Settings</button>
+        </div>
+        <button id="generateBtn">Generate</button>
+        </div>
+    </div>
+
+    <div class="panel stack-panel">
+        <p><span class="panel-titles">Stack Settings</span></p>
+        <div class="flex-col">
+        <div class="flex-row">
+        <label for="stack-opt">Stack:</label>
+        <select name="stack-opt" id="stack-lst">
+            <option value="ps">Particle Stack</option>
+            <option value="newdeck">New deck order</option>
+        </select></div>
+        <label class="dead-link"><input type="checkbox" class="dead-link" value="stck-clk2revl-enabled" unchecked>Click to reveal</label>
+        <button id="stackToggleBtn">Show stack info</button>
+        </div>
+    </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <button class="close-btn" id="closeModal">X</button>
+        <h2>Customise generation settings</h2>
+
+        <div class="modal-group">
+            <strong>Suit</strong>
+            <div class="select-buttons">
+                <button type="button" id="selectAllSuits">Select All</button>
+                <button type="button" id="deselectAllSuits">Deselect All</button>
+                <button type="button" id="selectReds">Select Reds</button>
+                <button type="button" id="selectBlacks">Select Blacks</button>
+            </div>
+            <div class="grid-modal-check-boxes">
+                <label><input type="checkbox" class="suit" value="hearts" checked> Hearts</label>
+                <label><input type="checkbox" class="suit" value="diamonds" checked> Diamonds</label>
+                <label><input type="checkbox" class="suit" value="clubs" checked> Clubs</label>
+                <label><input type="checkbox" class="suit" value="spades" checked> Spades</label>
+            </div>
+        </div>
+
+        <div class="modal-group">
+            <strong>Ranks</strong>
+            <div class="select-buttons">
+                <button type="button" id="selectAllRanks">Select All</button>
+                <button type="button" id="deselectAllRanks">Deselect All</button>
+                <button type="button" id="selectAllCourtsRanks">Select Courts</button>
+                <button type="button" id="selectAllNumsRanks">Select Numbers</button>
+            </div>
+            <div class="grid-modal-check-boxes" id="rankCheckboxes"></div>
+        </div>
+
+        <div class="modal-group">
+            <strong>Additional settings</strong>
+            <div class="grid-modal-check-boxes">
+                <label><input type="checkbox" id="noDupes" checked> Prevent duplicates</label>
+                <label><input type="checkbox" id="jokers"> Include jokers</label>
+            </div>
+        </div>
+
+        <div class="card-count" id="cardCountDisplay">Possible cards: 0</div>
+    </div>
+</div>
+</div>
+  <footer class="footer">
+    Developed in 2025. Playing cards images from <a target="_blank" rel="noopener noreferrer" href="https://code.google.com/archive/p/vector-playing-cards/">Google code archive: vector-playing-cards</a>. Favicon: <a target="_blank" rel="noopener noreferrer" href="https://www.flaticon.com/free-icons/playing-cards" title="playing cards icons">Playing cards icons created by riajulislam - Flaticon</a>
+  </footer>
+<!-- Include stacks BEFORE main JS <script> -->
+<script src="stacks/new-deck-stack.js"></script><!-- const new_deck_stack-->
+<script src="stacks/particle.js"></script><!-- const new_deck_stack-->
+
+<!-- Scripts -->
+<script src="scripts/modal.js"></script>
+<script src="scripts/data.js"></script>
+<script src="scripts/stack.js"></script>
+<script src="scripts/cardgen.js"></script>
+<script>
+
+/* ---------- DOM ---------- */
+const rankBox = document.getElementById("rankCheckboxes");
+const historyList = document.getElementById("history");
+const settingsBtn = document.getElementById("settingsBtn");
+const modal = document.getElementById("modal");
+const closeModal = document.getElementById("closeModal");
+const generateBtn = document.getElementById("generateBtn");
+const cardCountDisplay = document.getElementById("cardCountDisplay");
+const clearHistBtn = document.getElementById("clearhist");
+const toggleStackBtn = document.getElementById("stackToggleBtn");
+
+/* ---------- INIT ---------- */
+ranks.forEach(r=>{
+    const lbl = document.createElement("label");
+    lbl.innerHTML = `<input type="checkbox" class="rank" value="${r.v}" checked> ${r.l}`;
+    rankBox.appendChild(lbl);
+});
+
+/* ---------- SELECT ALL / NONE ---------- */
+document.getElementById("selectAllSuits").addEventListener("click",()=>document.querySelectorAll(".suit").forEach(c=>{c.checked=true;updateCardCount();}));
+document.getElementById("deselectAllSuits").addEventListener("click",()=>document.querySelectorAll(".suit").forEach(c=>{c.checked=false;updateCardCount();}));
+document.getElementById("selectReds").addEventListener("click",()=>document.querySelectorAll(".suit").forEach(c=>{
+    if (c.value === "hearts" || c.value === "diamonds") {
+        c.checked=true;
+    } else {
+        c.checked=false;
+    }
+    updateCardCount();
+}));
+document.getElementById("selectBlacks").addEventListener("click",()=>document.querySelectorAll(".suit").forEach(c=>{
+    if (c.value === "hearts" || c.value === "diamonds") {
+        c.checked=false;
+    } else {
+        c.checked=true;
+    }
+    updateCardCount();
+}));
+
+document.getElementById("selectAllRanks").addEventListener("click",()=>document.querySelectorAll(".rank").forEach(c=>{c.checked=true;updateCardCount();}));
+document.getElementById("deselectAllRanks").addEventListener("click",()=>document.querySelectorAll(".rank").forEach(c=>{c.checked=false;updateCardCount();}));
+document.getElementById("selectAllCourtsRanks").addEventListener("click",()=>document.querySelectorAll(".rank").forEach(c=>{
+    if (c.value > 10) {
+        c.checked=true;
+    } else {
+        c.checked=false;
+    }
+    // Special case for Ace
+    if (c.value == 14){
+        c.checked=false;
+    }
+    updateCardCount();
+}));
+document.getElementById("selectAllNumsRanks").addEventListener("click",()=>document.querySelectorAll(".rank").forEach(c=>{
+    if (c.value <= 10) {
+        c.checked=true;
+    } else {
+        c.checked=false;
+    }
+    // Special case for Ace
+    if (c.value == 14){
+        c.checked=true;
+    }
+    updateCardCount();
+}));
+
+
+/* ---------- MODAL CARD COUNT UPDATE ---------- */
+function updateCardCount(){
+    const suitsSelected = [...document.querySelectorAll(".suit:checked")].map(s=>s.value);
+    const ranksSelected = [...document.querySelectorAll(".rank:checked")].map(r=>+r.value);
+    const jokers = document.getElementById("jokers").checked;
+
+    let deckCount = 0;
+    suits.forEach(s=>{
+        if(suitsSelected.length && !suitsSelected.includes(s.name)) return;
+        ranks.forEach(r=>{
+            if(!ranksSelected.includes(r.v)) return;
+            deckCount++;
+        });
+    });
+    if(jokers){
+        deckCount++;
+        deckCount++;
+    }
+    cardCountDisplay.textContent = `Possible cards: ${deckCount}`;
+}
+document.querySelectorAll(".color, .suit, .rank, #jokers").forEach(el=>el.addEventListener("change", updateCardCount));
+updateCardCount() // Invoke first time
+
+/* ---------- LOGIC ---------- */
+generateBtn.addEventListener("click", genCardsCallLocal);
+function genCardsCallLocal(){
+    let numOCards = +document.getElementById("count").value;
+    let suitNames = [...document.querySelectorAll(".suit:checked")].map(s=>s.value);
+    let rankVals = [...document.querySelectorAll(".rank:checked")].map(r=>+r.value);
+    let noDupes = document.getElementById("noDupes").checked;
+    let jokers = document.getElementById("jokers").checked;
+    generateCards(numOCards, suitNames, rankVals, noDupes, jokers)
+}
+
+/* ---------- HISTORY LIST ---------- */
+
+function log(c){
+    const li = document.createElement("li");
+    const cardName = c.joker 
+        ? `${c.color} Joker` 
+        : capitalizeFirstLetter(get_rank_name(c)) + ` of ${c.s.label}`;
+    const stackNumber = get_stack_number_for_card(c);
+    let show_stack_style = showStack ? "inline" : "none";
+    li.innerHTML = `${cardName} <span class="hist-log-stack-txt" style="display:${show_stack_style}">(Stack: ${stackNumber})</span>`;
+    historyList.appendChild(li);
+}
+
+clearHistBtn.addEventListener("click", () => {
+  console.log("Clearing history")
+  // remove everything from list
+  historyList.innerHTML = '';
+});
+
+/* ---------- STACK NUMBERS ---------- */
+// toggle showing stack info
+toggleStackBtn.addEventListener("click", () => {
+  showStack = !showStack // flip showStack bool
+  toggleStackBtn.textContent = showStack ? "Hide stack info" : "Show stack info"
+  const sls = document.querySelectorAll("p.stack-label");
+    sls.forEach(p => {
+        p.style.display = showStack ? "block" : "none";
+    });
+  const spans = document.querySelectorAll(".hist-log-stack-txt");
+    spans.forEach(p => {
+        p.style.display = showStack ? "inline" : "none";
+    });
+});
+
+
+
+
+
+</script>
+</body>
+</html>
